@@ -1,11 +1,9 @@
 pipeline {
     agent any
-    
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/I-Am-PrashantGawali/Test-Jenkins-and-GitBucket-connection.git
-'
+                git 'https://github.com/I-Am-PrashantGawali/Test-Jenkins-and-GitBucket-connection.git'
             }
         }
         stage('Build') {
