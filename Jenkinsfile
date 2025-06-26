@@ -17,5 +17,14 @@ pipeline {
             }
         }
     }
+    post {
+        failure {
+            slackSend (
+                channel: '#ci-alerts',
+                color: 'danger',
+                message: "*BUILD FAILED* <${env.BUILD_URL}|View Details> for job ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+            )
+        }
+    }
 }
 
