@@ -4,38 +4,46 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/I-Am-PrashantGawali/Test-Jenkins-and-GitBucket-connection.git'
+                echo 'Checking out code...'
+                // git branch: 'main', url: 'https://github.com/I-Am-PrashantGawali/Test-Jenkins-and-GitBucket-connection.git'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'echo Building the app...'
+                echo 'Building...'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'echo Running tests...'
+                echo 'Running tests...'
+                // To force fail:
+                // error('Force a failure!')
             }
         }
     }
 
     post {
         success {
-            sh '''
-                curl -X POST -H 'Content-type: application/json' \
-                --data '{"text":"✅ *BUILD PASSED* for ${JOB_NAME} #${BUILD_NUMBER} 🎉 <${BUILD_URL}|Open>"}' \
-                https://hooks.slack.com/services/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
-            '''
+            slackSend (
+                channel: '#jenkins-notify',
+                color: 'good',
+                message: "✅ *BUILD PASSED* for ${env.JOB_NAME} #${env.BUILD_NUMBER} <${env.BUILD_URL}|Open>",
+                tokenCredentialId: 'SMS',   // <<< SAME FIX
+                teamDomain: '',              // <<< Empty if using xoxb bot
+                botUser: true
+            )
         }
-
         failure {
-            sh '''
-                curl -X POST -H 'Content-type: application/json' \
-                --data '{"text":"❌ *BUILD FAILED* for ${JOB_NAME} #${BUILD_NUMBER} <${BUILD_URL}|Open>"}' \
-                https://hooks.slack.com/services/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
-            '''
+            slackSend (
+                channel: '#jenkins-notify',
+                color: 'danger',
+                message: "❌ *BUILD FAILED* for ${env.JOB_NAME} #${env.BUILD_NUMBER} <${env.BUILD_URL}|Open>",
+                tokenCredentialId: 'SMS',
+                teamDomain: '',
+                botUser: true
+            )
         }
     }
 }
