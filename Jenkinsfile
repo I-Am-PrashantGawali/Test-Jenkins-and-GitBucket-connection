@@ -23,19 +23,19 @@ pipeline {
 
     post {
         success {
-            sh """
+            sh '''
                 curl -X POST -H 'Content-type: application/json' \
                 --data '{"text":"✅ *BUILD PASSED* for ${JOB_NAME} #${BUILD_NUMBER} 🎉 <${BUILD_URL}|Open>"}' \
                 https://hooks.slack.com/services/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
-            """
+            '''
         }
 
         failure {
-            sh """
+            sh '''
                 curl -X POST -H 'Content-type: application/json' \
                 --data '{"text":"❌ *BUILD FAILED* for ${JOB_NAME} #${BUILD_NUMBER} <${BUILD_URL}|Open>"}' \
                 https://hooks.slack.com/services/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
-            """
+            '''
         }
     }
 }
