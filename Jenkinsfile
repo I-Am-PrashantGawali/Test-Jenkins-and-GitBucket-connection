@@ -23,19 +23,19 @@ pipeline {
 
     post {
         success {
-            slackSend(
-                channel: '#ci-alerts',
-                color: 'good',
-                message: "*BUILD PASSED* for ${env.JOB_NAME} #${env.BUILD_NUMBER} 🎉 <${env.BUILD_URL}|Open>"
-            )
+            sh """
+                curl -X POST -H 'Content-type: application/json' \
+                --data '{"text":"✅ *BUILD PASSED* for ${JOB_NAME} #${BUILD_NUMBER} 🎉 <${BUILD_URL}|Open>"}' \
+                https://hooks.slack.com/services/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
+            """
         }
 
         failure {
-            slackSend(
-                channel: '#ci-alerts',
-                color: 'danger',
-                message: "*BUILD FAILED* for ${env.JOB_NAME} #${env.BUILD_NUMBER} ❌ <${env.BUILD_URL}|Open>"
-            )
+            sh """
+                curl -X POST -H 'Content-type: application/json' \
+                --data '{"text":"❌ *BUILD FAILED* for ${JOB_NAME} #${BUILD_NUMBER} <${BUILD_URL}|Open>"}' \
+                https://hooks.slack.com/services/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
+            """
         }
     }
 }
